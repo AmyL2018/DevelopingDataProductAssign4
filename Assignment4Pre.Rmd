@@ -1,0 +1,70 @@
+---
+title: "Week 4 project: Shiny Application and Reproducible Pitch "
+author: "Yimin Liu"
+date: "12/16/2019"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+
+
+This is a reproducible pitch presentation about my Iris plot application as the week 4 project. Iris data set gives the measurements in centimeters of the variables sepal length,sepal width,petal width and petal length. This application allows user to chose which measurement to be shown on the plot and compare the data between three species Iris setosa, versicolor, and virginica.
+
+
+## Shiny Application 
+The application include the following:
+Radio buttons used as measurement type input;Generate plot dataset according to the ui input in sever.R;Dataset displayed as a result of server calculations.
+
+Souce code of the application can be viewed at: https://github.com/AmyL2018/DevelopingDataProductAssign4/tree/master/DDP_Assignment4
+
+## Code mainly used in the application
+ui.R
+```{r ,  eval= FALSE, echo = TRUE}
+    sidebarPanel(
+        radioButtons("variable", "Measurement type:",
+                     c("Sepal Length" = "Sepal.Length",
+                       "Sepal Width" = "Sepal.Width",
+                       "Petal Length" = "Petal.Length",
+                       "Petal Width" = "Petal.Width")),
+    ),
+    mainPanel(
+        plotOutput("irisPlot"),
+```
+
+```{r ,  echo = FALSE} 
+library(shiny)
+
+# Define UI for application that draws a histogram
+shinyUI(fluidPage(
+    sidebarPanel(
+        radioButtons("variable", "Measurement type:",
+                     c("Sepal Length" = "Sepal.Length",
+                       "Sepal Width" = "Sepal.Width",
+                       "Petal Length" = "Petal.Length",
+                       "Petal Width" = "Petal.Width")),
+    ),
+))
+    
+```
+sever.R
+```{r ,  eval= FALSE, echo = TRUE}
+formulaText <- reactive({
+         paste("Species vs ", input$variable)
+     })
+output$caption <- renderText({
+         formulaText()
+     })
+output$irisPlot <- renderPlot({
+         ggplot(mData, aes_string(y=input$variable, x="Species")) + geom_point(colour = 'red', size = 2)
+     })
+```
+## Data Table
+The following iris data table is used in the application:
+```{r,  echo = FALSE, results= 'asis'}
+library(knitr)
+kable(iris)
+```
